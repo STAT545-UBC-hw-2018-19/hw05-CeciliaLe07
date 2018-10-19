@@ -388,17 +388,23 @@ Use `ggsave()` to explicitly save a plot to file. Then use `![Alt text](/path/to
 
 To save our last graph we can use the command `ggsave()` and set different options, for example:
 
--   To save the plot with determined width and height:
+-   To save the plot with determined width and height and with **raster** device (png):
 
 ``` r
-ggsave("ggplot_modified_theme.png", width = 8, height = 4)
+ggsave("ggplot_modified_theme.png", width = 8, height = 4, dpi="retina")
 ```
 
-And then we can place this graph in this part on the document (as an example):
+-   To save the same plot put in a **vector** format
 
-![some caption](ggplot_modified_theme.png)
+``` r
+ggsave("ggplot_modified_theme.pdf", width = 8, height = 4)
+```
 
-ggsave(filename, plot = last\_plot(), device = NULL, path = NULL, scale = 1, width = NA, height = NA, units = c("in", "cm", "mm"), dpi = 300, limitsize = TRUE, ...)
+And then we can place the **raster** graph in this part on the document by typing `![ggplot_modified_theme](ggplot_modified_theme.png)`
+
+![ggplot\_modified\_theme\_png](ggplot_modified_theme.png) We can also place the **vector** graph in this part on the document by typing `![ggplot_modified_theme_pdf](ggplot_modified_theme.pdf)`
+
+![ggplot\_modified\_theme\_pdf](ggplot_modified_theme.pdf)
 
 ### But I want to do more!
 
