@@ -58,6 +58,21 @@ library(gapminder)
 library(knitr)
 library(kableExtra)
 library(forcats)
+library(scales)
+```
+
+    ## 
+    ## Attaching package: 'scales'
+
+    ## The following object is masked from 'package:purrr':
+    ## 
+    ##     discard
+
+    ## The following object is masked from 'package:readr':
+    ## 
+    ##     col_factor
+
+``` r
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -299,7 +314,7 @@ read_csv("new_gapminder.csv") %>%  str()
     ##   .. ..- attr(*, "class")= chr  "collector_guess" "collector"
     ##   ..- attr(*, "class")= chr "col_spec"
 
-We can realize that the format for variables of type factors changed to character. On one to handle this problem is using command `read.csv` instead of `read_csv`in order to use the parameters `colClasses`:
+We can realize that the format for variables of type **factor** changed to **character**. One to handle this problem is using command `read.csv` instead of `read_csv`in order to use the parameters `colClasses`:
 
 ``` r
 data <- read.csv('new_gapminder.csv', colClasses = c(rep('factor',2),rep('numeric',4),'factor')) %>% str()
@@ -320,6 +335,49 @@ Remake at least one figure or create a new one, in light of something you learne
 
 Then, make a new graph by converting this visual (or another, if you'd like) to a `plotly` graph. What are some things that `plotly` makes possible, that are not possible with a regular `ggplot2` graph?
 
+First, we are going to draw a graph that illustrates the relation between the GDP per capita and life expectancy during 2007 by continent:
+
+``` r
+gap_to_export %>%
+  filter(year==2007) %>% 
+  ggplot(aes(gdpPercap,lifeExp)) +
+  geom_point(aes(colour=pop), alpha=0.80, size = 2) +
+  geom_smooth(method = "lm") +
+  facet_grid(~continent) 
+```
+
+    ## Warning in qt((1 - level)/2, df): NaNs produced
+
+![](hw05-CeciliaLe07_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
+By modifiyind and adding some elements using `theme()`, the package `scales` and a different palette of colors, we can privide a different aspect to the same graph:
+
+``` r
+gap_to_export %>%
+  rename(Population = pop) %>% 
+  filter(year==2007) %>% 
+  ggplot(aes(gdpPercap,lifeExp)) +
+  geom_point(aes(colour=Population), alpha=0.80, size = 2) +
+  geom_smooth(method = "lm", color="darkblue", se = FALSE) +
+  facet_grid(~continent) +
+  ggtitle("Relation between GDP per capita and life expectancy\nduring 2007 by continent") +
+  xlab("GDP per capita") +
+  ylab("Life expectancy") +
+  scale_x_log10(labels=dollar_format()) +
+  scale_color_distiller(
+        trans   = "log10",
+        breaks  = 10^(1:10),
+        labels  = comma_format(),
+        palette = "BuGn"
+    ) +
+  theme_bw() +
+  theme(axis.text = element_text(size = 8),
+        strip.background = element_rect(fill = "gray40"),
+        strip.text = element_text(size = 10, colour = "white"))
+```
+
+![](hw05-CeciliaLe07_files/figure-markdown_github/unnamed-chunk-7-1.png)
+
 ### Part 4: Writing figures to file
 
 Use `ggsave()` to explicitly save a plot to file. Then use `![Alt text](/path/to/img.png)` to load and embed it in your report. You can play around with various options, such as:
@@ -327,6 +385,20 @@ Use `ggsave()` to explicitly save a plot to file. Then use `![Alt text](/path/to
 -   Arguments of `ggsave()`, such as width, height, resolution or text scaling.
 -   Various graphics devices, e.g. a vector vs. raster format.
 -   Explicit provision of the plot object `p` via `ggsave(..., plot = p)`. Show a situation in which this actually matters.
+
+To save our last graph we can use the command `ggsave()` and set different options, for example:
+
+-   To save the plot with determined width and height:
+
+``` r
+ggsave("ggplot_modified_theme.png", width = 8, height = 4)
+```
+
+And then we can place this graph in this part on the document (as an example):
+
+![some caption](ggplot_modified_theme.png)
+
+ggsave(filename, plot = last\_plot(), device = NULL, path = NULL, scale = 1, width = NA, height = NA, units = c("in", "cm", "mm"), dpi = 300, limitsize = TRUE, ...)
 
 ### But I want to do more!
 
