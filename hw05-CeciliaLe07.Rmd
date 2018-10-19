@@ -134,7 +134,7 @@ gapminder %>%
   ylab("Number of observations")
 ```
 
-It allows to appreciate how *Oceania*, which was the continent with the fewest number of observations has the greatest variability on the records of life expectancy, while Asia was the continent that presented the fewest variable life expectancy even when it has not the biggest number of observations in the dataframe.
+It allows to appreciate how *Oceania*, which was the continent with the fewest number of observations has the greatest variability on the records of life expectancy, while Asia was the continent that presented the fewest variable life expectancy even when it is not the biggest number of observations in the dataframe.
 
 
 In the following example we are going to show the gdp per capita of the countries of America during 2007, ordering this countries by life expectancy and gdp Per capita from lowest to highest:
@@ -279,7 +279,7 @@ Then we can place thour graph in any part of the document by typing `![ggplot_fi
 
 ### Final observation
 
-To explore the `plotly`graphs appeared to me to be kind of similar to the graphs that we can built using the `highcharter` package, which allos R to draw graphs of the style of [!highcharts](https://www.highcharts.com/), with interactive plots. A brief general example of thos library is given by the following graph, wich is the same as the first bar plot we built with `ggplot`.
+To explore the `plotly`graphs appeared to me to be kind of similar to the graphs that we can built using the `highcharter` package, which allos R to draw graphs of the style of [highcharts](https://www.highcharts.com/), with interactive plots. A brief general example of thos library is given by the following graph, wich is the same as the first bar plot we built with `ggplot`.
 
 ```r
 library(highcharter)
