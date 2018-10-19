@@ -9,8 +9,7 @@ Cecilia Leon
         -   [Part 2: File I/O](#part-2-file-io)
         -   [Part 3: Visualization design](#part-3-visualization-design)
         -   [Part 4: Writing figures to file](#part-4-writing-figures-to-file)
-        -   [But I want to do more!](#but-i-want-to-do-more)
-        -   [Finishing up, and Reflection](#finishing-up-and-reflection)
+        -   [Final observation](#final-observation)
 
 Homework 05: Factor and figure management
 =========================================
@@ -214,11 +213,12 @@ Thus, we can confirm the other 140 levels correspond to the rest of continents.
 If we dont't apply any kind of `arrange`to the dataframe, **R** consider the levels of a factor un alphabetic order. We can illustrate this by the following graph of number of observations by continent:
 
 ``` r
-ggplot(gapminder,aes(continent, fill = continent)) +
-  geom_bar() +
-  ggtitle("Observations on gapminder dataframe by continent") +
-  xlab("Continent\n(In alphabetic order)") +
-  ylab("Number of observations")
+first_plot <- ggplot(gapminder,aes(continent, fill = continent)) +
+                geom_bar() +
+                ggtitle("Observations on gapminder dataframe by continent") +
+                xlab("Continent\n(In alphabetic order)") +
+                ylab("Number of observations")
+first_plot
 ```
 
 ![](hw05-CeciliaLe07_files/figure-markdown_github/witouht_order_criteria-1.png)
@@ -353,30 +353,45 @@ gap_to_export %>%
 By modifiyind and adding some elements using `theme()`, the package `scales` and a different palette of colors, we can privide a different aspect to the same graph:
 
 ``` r
-gap_to_export %>%
-  rename(Population = pop) %>% 
-  filter(year==2007) %>% 
-  ggplot(aes(gdpPercap,lifeExp)) +
-  geom_point(aes(colour=Population), alpha=0.80, size = 2) +
-  geom_smooth(method = "lm", color="darkblue", se = FALSE) +
-  facet_grid(~continent) +
-  ggtitle("Relation between GDP per capita and life expectancy\nduring 2007 by continent") +
-  xlab("GDP per capita") +
-  ylab("Life expectancy") +
-  scale_x_log10(labels=dollar_format()) +
-  scale_color_distiller(
-        trans   = "log10",
-        breaks  = 10^(1:10),
-        labels  = comma_format(),
-        palette = "BuGn"
-    ) +
-  theme_bw() +
-  theme(axis.text = element_text(size = 8),
-        strip.background = element_rect(fill = "gray40"),
-        strip.text = element_text(size = 10, colour = "white"))
+improved_plot <- gap_to_export %>%
+    rename(Population = pop) %>% 
+    filter(year==2007) %>% 
+    ggplot(aes(gdpPercap,lifeExp)) +
+    geom_point(aes(colour=Population), alpha=0.80, size = 2) +
+    geom_smooth(method = "lm", color="darkblue", se = FALSE) +
+    facet_grid(~continent) +
+    ggtitle("Relation between GDP per capita and life expectancy\nduring 2007 by continent") +
+    xlab("GDP per capita") +
+    ylab("Life expectancy") +
+    #Making clearer the scale of x
+    scale_x_log10(labels=dollar_format()) + 
+    #Applying a different palette of colors
+    scale_color_distiller(
+          trans   = "log10",
+          breaks  = 10^(1:10),
+          labels  = comma_format(),
+          palette = "BuGn"
+      ) +
+    #Using a pre-determined theme for general aspect
+    theme_bw() +
+    #Modifiying some especific elements 
+    theme(axis.text = element_text(size = 8),
+          strip.background = element_rect(fill = "gray40"),
+          strip.text = element_text(size = 10, colour = "white"))
 ```
 
-![](hw05-CeciliaLe07_files/figure-markdown_github/unnamed-chunk-7-1.png)
+We can convert this last plot to a plot of tyoe `plotly`by the following code.
+
+``` r
+library(plotly)
+ggplotly(improved_plot)
+```
+
+![](plot_plotly.png)
+
+**Note:** As ploty graphs doesn´t are correctly rendered in markdown documents, it is necesary to run this code in an R session in order to interact with the produced plot.
+
+When I runned this lines on my local session, I can realize that the main difference between `ggplot`and `plotly` is that the latter allows the user to have interaction with the graphs by making some zooms over a specif zone of the graph, also it provides tooltips when hover the mouse over the points in the plot, that tolltips provide information such as the corresponding values of each point.
 
 ### Part 4: Writing figures to file
 
@@ -400,34 +415,41 @@ ggsave("ggplot_modified_theme.png", width = 8, height = 4, dpi="retina")
 ggsave("ggplot_modified_theme.pdf", width = 8, height = 4)
 ```
 
-And then we can place the **raster** graph in this part on the document by typing `![ggplot_modified_theme](ggplot_modified_theme.png)`
+And then we can place the **raster** graph in this part on the document by typing `![ggplot_modified_theme_png](ggplot_modified_theme.png)`
 
 ![ggplot\_modified\_theme\_png](ggplot_modified_theme.png) We can also place the **vector** graph in this part on the document by typing `![ggplot_modified_theme_pdf](ggplot_modified_theme.pdf)`
 
-![ggplot\_modified\_theme\_pdf](ggplot_modified_theme.pdf)
+> Please, click the link to see that image ![ggplot\_modified\_theme\_pdf](ggplot_modified_theme.pdf)
 
-### But I want to do more!
+-   Finally, the **provision of the plot object matters when** we want to save an image which wasn't our most recent produced plot, for example if we want to save the first graph of this document, which was a barplot loaded in the object `first_plot`, we can do it in this part of the document by:
 
-If you're particularly keen on levelling up the challenge of this assignment, try these things (this is all optional):
+``` r
+ggsave("ggplot_first_barplot.png", width = 8, height = 4, plot = first_plot)
+```
 
-Make a deeper exploration of the forcats packages, i.e. try more of the factor level reordering functions.
+Then we can place thour graph in any part of the document by typing `![ggplot_first_barplot.png](ggplot_first_barplot.png)`
 
-Revalue a factor, e.g.:
+![](ggplot_first_barplot.png)
 
--   **Gapminder version**: Pick a handful of countries, each of which you can associate with a stereotypical food (or any other non-controversial thing ... sport? hobby? type of music, art or dance? animal? landscape feature?). Create an excerpt of the Gapminder data, filtered to just these countries. Create a new factor -- you pick the name! -- by mapping the existing country factor levels to the new levels.
-    -   Examples: Italy --&gt; wine, Germany --&gt; beer, Japan --&gt; sake. (Austria, Germany) --&gt; German, (Mexico, Spain) --&gt; Spanish, (Portugal, Brazil) --&gt; Portuguese. Let your creativity flourish.
--   **Singer version**: Pick a handful of locations (they are named `city`, try using `distinct()`) that you can pinpoint to a geographical place (city, region, country, continent,...). Create an excerpt of the Singer data, filtered to just those rows. Create a (couple of) new factor(s) -- you pick the name(s)! -- by mapping the existing `city` factor levels to the new (city, region, country...) levels.
-    -   Examples: "London, England" --&gt; "London", "England", "UK", "Europe";
-    -   "Los Angeles, CA" --&gt; "Los Angeles", "California", "USA", "Americas";
-    -   ...
-    -   "310, Louisiana" --&gt; "New Orleans", "Louisiana", "USA", "Americas".
+### Final observation
 
-You could even try to make this process of geolocalization more streamlined: you may want to try and use the `separate` function from tidyr.
+To explore the `plotly`graphs appeared to me to be kind of similar to the graphs that we can built using the `highcharter` package, which allos R to draw graphs of the style of [!highcharts](https://www.highcharts.com/), with interactive plots. A brief general example of thos library is given by the following graph, wich is the same as the first bar plot we built with `ggplot`.
 
-### Finishing up, and Reflection
+``` r
+library(highcharter)
 
-Once you're done the above, go back to [UBC canvas](https://canvas.ubc.ca/), and find the "Homework 05" page.
+highchart() %>%
+   hc_add_series(data = unname(table(gapminder$continent)), type = "column") %>% 
+   hc_xAxis(categories = names(table(gapminder$continent))) %>% 
+    hc_plotOptions(
+      series = list(
+        showInLegend = FALSE
+        ),
+      column = list(
+        colorByPoint = TRUE
+      ))
+```
 
-You're encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc. As usual, put this reflection on your canvas submission. No need to write lots here.
+![ggplot\_first\_barplot.png](plot_highcharter.png)
 
-Please add a link to your homework respository to help out our wonderful TA's.
+**Note:** Similarly to the case of ploty graphs, it is necesary to run this code in an R session in order to interact with the produced plot.
