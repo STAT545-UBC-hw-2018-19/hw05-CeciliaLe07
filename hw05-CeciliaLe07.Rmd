@@ -1,5 +1,5 @@
 ---
-title: 'Homework 04: Tidy data and joins'
+title: 'Homework 05: Factor and figure management'
 author: "Cecilia Leon"
 output:
   github_document:

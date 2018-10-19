@@ -1,4 +1,4 @@
-Homework 04: Tidy data and joins
+Homework 05: Factor and figure management
 ================
 Cecilia Leon
 
