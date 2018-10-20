@@ -400,14 +400,14 @@ improved_plot
 
 We can convert this last plot to a plot of type `plotly`by the code:
 
+**Note:** As ploty graphs doesn´t are correctly rendered in markdown documents, it is necesary to run this code in an **R** session to interact with the produced plot.
+
 ``` r
 library(plotly)
 ggplotly(improved_plot)
 ```
 
 ![](plot_plotly.png)
-
-**Note:** As ploty graphs doesn´t are correctly rendered in markdown documents, it is necesary to run this code in an R session to interact with the produced plot.
 
 **What's the difference between `ggplot` and `plotly`?**
 
@@ -455,6 +455,8 @@ Then, we can place this graph in any part of the document by typing `![ggplot_fi
 
 To explore the `plotly`graphs appeared to me to be kind of similar to the graphs that we can built using the `highcharter` package, which allows **R** to draw graphs of [highcharts](https://www.highcharts.com/) style, with interactive plots. A brief general example using this library is given by the following graph, which is the same as the first one in this document:
 
+**Note:** Similarly to the case of ploty graphs, it is necesary to run this code in **R** session in order to interact with the produced plot.
+
 ``` r
 library(highcharter)
 
@@ -471,5 +473,3 @@ highchart() %>%
 ```
 
 ![ggplot\_first\_barplot.png](plot_highcharter.png)
-
-**Note:** Similarly to the case of ploty graphs, it is necesary to run this code in R session in order to interact with the produced plot.
