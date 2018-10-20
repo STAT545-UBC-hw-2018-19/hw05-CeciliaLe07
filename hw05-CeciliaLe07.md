@@ -114,7 +114,7 @@ gapminder %>%
     ##  $ pop      : int  8425333 9240934 10267083 11537966 13079460 14880372 12881816 13867957 16317921 22227415 ...
     ##  $ gdpPercap: num  779 821 853 836 740 ...
 
-When we filter by condition `continent != "Oceania"` we can note that both *continent* and *country* keep the same number of levels without filtering, this happens because we have empty levels on the filtered dataframe. In order to drop this kind of levels we can use `droplevels()`:
+We can note that both *continent* and *country* **keep the same number of levels** than without filtering. This happens because we have empty levels on the filtered dataframe. In order to drop this kind of levels we can use `droplevels()`:
 
 ``` r
 gapminder %>% 
@@ -131,7 +131,7 @@ gapminder %>%
     ##  $ pop      : int  8425333 9240934 10267083 11537966 13079460 14880372 12881816 13867957 16317921 22227415 ...
     ##  $ gdpPercap: num  779 821 853 836 740 ...
 
-This time, the number of levels for continent changed from **5** to **4** as we dropped one level (*Oceania*). Furthermore, the number of levels in country changed from **142** to **140**, which means there were two countries associated to the continent Oceania. We can confirm that statement by:
+This time, the number of levels for continent changed from **5** to **4** as we dropped one level (*Oceania*). Furthermore, the number of levels in country changed from **142** to **140**, which means there are two countries associated to the continent *Oceania*. We can confirm it by:
 
 ``` r
 gapminder %>% 
@@ -148,7 +148,7 @@ gapminder %>%
     ##  $ pop      : int  8691212 9712569 10794968 11872264 13177000 14074100 15184200 16257249 17481977 18565243 ...
     ##  $ gdpPercap: num  10040 10950 12217 14526 16789 ...
 
-Finally, we can known the number of countries per continent on this data frame by:
+Finally, we can know the number of countries per continent on this dataframe by:
 
 ``` r
 gapminder %>% 
@@ -206,11 +206,11 @@ Europe
 </tr>
 </tbody>
 </table>
-Thus, we can confirm the other 140 levels correspond to the rest of continents.
+Thus, we can confirm the other 140 levels (countries) correspond to the rest of continents.
 
 **ii) Reorder the levels of `country` or `continent`.** Use the forcats package to change the order of the factor levels, based on a principled summary of one of the quantitative variables. Consider experimenting with a summary statistic beyond the most basic choice of the median.
 
-If we dont't apply any kind of `arrange`to the dataframe, **R** consider the levels of a factor un alphabetic order. We can illustrate this by the following graph of number of observations by continent:
+If we dont't apply any kind of arrange to the dataframe, **R** consider the levels of a factor in alphabetic order. We can illustrate this by the following graph about the number of observations in `gapminder` by continent:
 
 ``` r
 first_plot <- ggplot(gapminder,aes(continent, fill = continent)) +
@@ -221,9 +221,9 @@ first_plot <- ggplot(gapminder,aes(continent, fill = continent)) +
 first_plot
 ```
 
-![](hw05-CeciliaLe07_files/figure-markdown_github/witouht_order_criteria-1.png)
+![](hw05-CeciliaLe07_files/figure-markdown_github/without_order_criteria-1.png)
 
-But we can provide a different cirteria for the order of factors, for example, if we want to show the number of observations in the dataframe by continent, considering the order given by the `spreadness`of \*\*life expectancy\*:
+But we can provide a different cirteria for the order of factors, for example, if we want to show the number of observations in the dataframe by continent, considering the order given by the `variability`of **life expectancy**:
 
 ``` r
 gapminder %>%
@@ -231,15 +231,15 @@ gapminder %>%
   ggplot(aes(continent, fill = continent)) +
   geom_bar() +
   ggtitle("Observations on gapminder dataframe by continent") +
-  xlab("Continent\n(From the highest spreadness of life expectancy to the lowest)") +
+  xlab("Continent\n(From the highest variability of life expectancy to the lowest)") +
   ylab("Number of observations")
 ```
 
-![](hw05-CeciliaLe07_files/figure-markdown_github/unnamed-chunk-1-1.png)
+![](hw05-CeciliaLe07_files/figure-markdown_github/with_order_criteria-1.png)
 
-It allows to appreciate how *Oceania*, which was the continent with the fewest number of observations has the greatest variability on the records of life expectancy, while Asia was the continent that presented the fewest variable life expectancy even when it is not the biggest number of observations in the dataframe.
+It allows to appreciate that *Oceania*, the continent with the fewest number of observations, has the lowest variability on the records of life expectancy, while Asia is the continent with the greatest variability on life expectancy but it has not the biggest number of observations in the dataframe.
 
-In the following example we are going to show the gdp per capita of the countries of America during 2007, ordering this countries by life expectancy and gdp Per capita from lowest to highest:
+Following example shows the GDP per capita of the countries of America during 2007, with ordered countries by life expectancy and GDP Per capita from lowest to highest:
 
 ``` r
 gapminder %>% 
@@ -252,13 +252,29 @@ gapminder %>%
   ylab("Countries\n(Ordered by GDP per capita and life expectancy)")
 ```
 
-![](hw05-CeciliaLe07_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](hw05-CeciliaLe07_files/figure-markdown_github/with_order_by2-1.png)
+
+If we don't use an specific order for countries, the previous graph looks like the following:
+
+``` r
+gapminder %>% 
+  filter(continent == "Americas" , year == 2007) %>%
+  ggplot(aes(gdpPercap,country)) +
+  geom_point(aes(gdpPercap, colour=lifeExp)) +
+  ggtitle("Countries of Americas' GDP per capita and Life Expectancy") +
+  xlab("GDP per capita") +
+  ylab("Countries\n(Ordered by GDP per capita and life expectancy)")
+```
+
+![](hw05-CeciliaLe07_files/figure-markdown_github/without_order_by2-1.png)
+
+As we can appreciate, in this case the reordering in the dataframe make **easier to read** the graph.
 
 ### Part 2: File I/O
 
 Experiment with one or more of `write_csv()/read_csv()` (and/or TSV friends), `saveRDS()/readRDS()`, `dput()/dget()`. Create something new, probably by filtering or grouped-summarization of Singer or Gapminder. I highly recommend you fiddle with the factor levels, i.e. make them non-alphabetical (see previous section). Explore whether this survives the round trip of writing to file then reading back in.
 
-We are going to create a new factor variable called **category** and the export the new dataframe (without chaging the levels of this factor) to a file with format `csv`.
+We are going to create a new factor variable called **category**, and then, export the new dataframe (without chaging the levels of this factor) to the file **`new_gapminder.csv`**.
 
 ``` r
 gap_to_export <- gapminder %>% 
@@ -314,7 +330,7 @@ read_csv("new_gapminder.csv") %>%  str()
     ##   .. ..- attr(*, "class")= chr  "collector_guess" "collector"
     ##   ..- attr(*, "class")= chr "col_spec"
 
-We can realize that the format for variables of type **factor** changed to **character**. One to handle this problem is using command `read.csv` instead of `read_csv`in order to use the parameters `colClasses`:
+We can realize that the format for variables of type **factor** changed to **character**. One way to handle this problem is by using command `read.csv` instead of `read_csv`in order to use the parameters `colClasses`:
 
 ``` r
 data <- read.csv('new_gapminder.csv', colClasses = c(rep('factor',2),rep('numeric',4),'factor')) %>% str()
@@ -346,11 +362,9 @@ gap_to_export %>%
   facet_grid(~continent) 
 ```
 
-    ## Warning in qt((1 - level)/2, df): NaNs produced
+![](hw05-CeciliaLe07_files/figure-markdown_github/graph_without_theme-1.png)
 
-![](hw05-CeciliaLe07_files/figure-markdown_github/unnamed-chunk-6-1.png)
-
-By modifiyind and adding some elements using `theme()`, the package `scales` and a different palette of colors, we can privide a different aspect to the same graph:
+By modifiyind and adding some elements using `theme()`, the package `scales` and a different palette of colors, we can provide a different aspect to the same graph:
 
 ``` r
 improved_plot <- gap_to_export %>%
@@ -378,9 +392,13 @@ improved_plot <- gap_to_export %>%
     theme(axis.text = element_text(size = 8),
           strip.background = element_rect(fill = "gray40"),
           strip.text = element_text(size = 10, colour = "white"))
+
+improved_plot
 ```
 
-We can convert this last plot to a plot of tyoe `plotly`by the following code.
+![](hw05-CeciliaLe07_files/figure-markdown_github/graph_with_theme-1.png)
+
+We can convert this last plot to a plot of type `plotly`by the code:
 
 ``` r
 library(plotly)
@@ -389,9 +407,11 @@ ggplotly(improved_plot)
 
 ![](plot_plotly.png)
 
-**Note:** As ploty graphs doesn´t are correctly rendered in markdown documents, it is necesary to run this code in an R session in order to interact with the produced plot.
+**Note:** As ploty graphs doesn´t are correctly rendered in markdown documents, it is necesary to run this code in an R session to interact with the produced plot.
 
-When I runned this lines on my local session, I can realize that the main difference between `ggplot`and `plotly` is that the latter allows the user to have interaction with the graphs by making some zooms over a specif zone of the graph, also it provides tooltips when hover the mouse over the points in the plot, that tolltips provide information such as the corresponding values of each point.
+**What's the difference between `ggplot` and `plotly`?**
+
+When I run this lines on my local session, I realized that the main difference between `ggplot`and `plotly` is that the latter allows the user to have interaction with the graphs by making some zooms over a specif zone of the graph. Moreover,it provides tooltips with information such as the corresponding values of each point when hover the cursor.
 
 ### Part 4: Writing figures to file
 
@@ -401,7 +421,7 @@ Use `ggsave()` to explicitly save a plot to file. Then use `![Alt text](/path/to
 -   Various graphics devices, e.g. a vector vs. raster format.
 -   Explicit provision of the plot object `p` via `ggsave(..., plot = p)`. Show a situation in which this actually matters.
 
-To save our last graph we can use the command `ggsave()` and set different options, for example:
+To save our **last graph** we can use the command `ggsave()` and set different options, for example:
 
 -   To save the plot with determined width and height and with **raster** device (png):
 
@@ -409,31 +429,31 @@ To save our last graph we can use the command `ggsave()` and set different optio
 ggsave("ggplot_modified_theme.png", width = 8, height = 4, dpi="retina")
 ```
 
--   To save the same plot put in a **vector** format
+-   To save the same plot using **vector** device(pdf):
 
 ``` r
 ggsave("ggplot_modified_theme.pdf", width = 8, height = 4)
 ```
 
-And then we can place the **raster** graph in this part on the document by typing `![ggplot_modified_theme_png](ggplot_modified_theme.png)`
+After that, we can place the **raster** graph in this part on the document by typing `![ggplot_modified_theme_png](ggplot_modified_theme.png)`
 
 ![ggplot\_modified\_theme\_png](ggplot_modified_theme.png) We can also place the **vector** graph in this part on the document by typing `![ggplot_modified_theme_pdf](ggplot_modified_theme.pdf)`
 
-> Please, click the link to see that image ![ggplot\_modified\_theme\_pdf](ggplot_modified_theme.pdf)
+> Please, click the link to see the image ![ggplot\_modified\_theme\_pdf](ggplot_modified_theme.pdf)
 
--   Finally, the **provision of the plot object matters when** we want to save an image which wasn't our most recent produced plot, for example if we want to save the first graph of this document, which was a barplot loaded in the object `first_plot`, we can do it in this part of the document by:
+-   Finally, the **provision of the plot object matters when** we want to save an image which isn't our most recent produced plot. For example, if we want to save the first created graph (which was a barplot loaded in the object `first_plot`) at the current line of document, we can do it by:
 
 ``` r
 ggsave("ggplot_first_barplot.png", width = 8, height = 4, plot = first_plot)
 ```
 
-Then we can place thour graph in any part of the document by typing `![ggplot_first_barplot.png](ggplot_first_barplot.png)`
+Then, we can place this graph in any part of the document by typing `![ggplot_first_barplot.png](ggplot_first_barplot.png)`
 
 ![](ggplot_first_barplot.png)
 
 ### Final observation
 
-To explore the `plotly`graphs appeared to me to be kind of similar to the graphs that we can built using the `highcharter` package, which allos R to draw graphs of the style of [highcharts](https://www.highcharts.com/), with interactive plots. A brief general example of thos library is given by the following graph, wich is the same as the first bar plot we built with `ggplot`.
+To explore the `plotly`graphs appeared to me to be kind of similar to the graphs that we can built using the `highcharter` package, which allows **R** to draw graphs of [highcharts](https://www.highcharts.com/) style, with interactive plots. A brief general example using this library is given by the following graph, which is the same as the first one in this document:
 
 ``` r
 library(highcharter)
@@ -452,4 +472,4 @@ highchart() %>%
 
 ![ggplot\_first\_barplot.png](plot_highcharter.png)
 
-**Note:** Similarly to the case of ploty graphs, it is necesary to run this code in an R session in order to interact with the produced plot.
+**Note:** Similarly to the case of ploty graphs, it is necesary to run this code in R session in order to interact with the produced plot.
